@@ -48,7 +48,7 @@ objects:
                     claimName: ${DATABASE_BACKUP_VOLUME_CLAIM}
               containers:
                 - name: database-backup
-                  image: 'registry.access.redhat.com/rhscl/mariadb-101-rhel7:10.1'
+                  image: 'docker.io/library/mariadb:10.2'
                   command:
                     - 'bash'
                     - '-eo'
