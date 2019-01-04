@@ -67,14 +67,15 @@ parameters:
 - description: Hostname of DB server
   name: DATABASE_HOST
   required: true
-  value: mariadb
+  value: "mariadb"
 - description: DB Port
   name: DATABASE_PORT
   required: true
-  value: 3306
+  value: "3306"
 - description: Database to backup
   name: DATABASE_NAME
   required: true
 - description: Name of the volume claim to be used as storage
   name: DATABASE_BACKUP_VOLUME_CLAIM
   required: true
+    value: "mariadb-backup"
