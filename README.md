@@ -9,10 +9,7 @@ This tool uses an existing RedHat Maria DB container and overrides its command. 
 The project contains two templates:
 
 * mariadb-backup-template.yaml
-* mariadb-backup-template-with-icinga.yaml
 
-As the names are stating the second template has also an implementation with a monitoring support from icinga.
-More about the monitoring can be found int the section [Monitoring](#Monitoring)
 
 ## How to deploy the maria DB backup pod
 
@@ -43,15 +40,16 @@ oc process --parameters -f mariadb-backup-template.yaml
 
 ### Create the cronjob
 
+You can store the template in the project using and `oc process` afterwards
+
 ```bash
-oc process -f mariadb-backup-template-with-icinga.yaml DATABASE_USER=<dbuser> DATABASE_PASSWORD=<dbpassword> DATABASE_HOST=<dbhost> DATABASE_PORT=<dbport> DATABASE_NAME=<dbname> DATABASE_BACKUP_VOLUME_CLAIM=<pvc-claim-name> ICINGA_USERNAME=<icinga-user> ICINGA_PASSWORD=<icinga-password> ICINGA_SERVICE_URL=<icinga-service-url> | oc create -f -
+oc create -f mariadb-backup-template.yaml # project template
+oc process mariadb-backup-template DATABASE_USER=<dbuser> DATABASE_PASSWORD=<dbpassword> ... | oc create -f -
 ```
 
-You can also store the template in the project using and `oc process` afterwards
-
 ```bash
-oc create -f mariadb-backup-template.yaml
-oc process mariadb-backup-template DATABASE_USER=<dbuser> DATABASE_PASSWORD=<dbpassword> ... | oc create -f -
+oc create -f mariadb-backup-template.yaml -n openshift # global template
+oc process -n openshift mariadb-backup-template DATABASE_USER=<dbuser> DATABASE_PASSWORD=<dbpassword> ... | oc create -f -
 ```
 
 To check if the cronjob is present:
@@ -74,11 +72,3 @@ To restore the backup you start a backup pod (e.g. in debug mode) connect to the
 oc rsh mariadb-backup-[xyz]-debug
 mysql -u<db-user> -p<db-user-password> -h<host> < <path-to-backupfile> (the backupfile has to be unpacked)
 ````
-
-### Monitoring
-
-In the template `mariadb-backup-template-with-icinga.yaml` an passive incinga service is monitoring the backup. Should the bash script (responsible for the backup) throw an error at any point during the executing the notification will not be sent to icinga. The passive service checks periodically if a notification was received. If not the service will update its status. The following parameters are used for the monitoring:
-
-* ICINGA_USERNAME
-* ICINGA_PASSWORD
-* ICINGA_SERVICE_URL
