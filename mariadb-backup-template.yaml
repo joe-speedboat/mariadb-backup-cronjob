@@ -71,7 +71,7 @@ parameters:
 - description: DB Port
   name: DATABASE_PORT
   required: true
-  value: "3306"
+  value: 3306
 - description: Database to backup
   name: DATABASE_NAME
   required: true
